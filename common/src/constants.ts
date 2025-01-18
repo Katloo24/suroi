@@ -78,7 +78,8 @@ export const GameConstants = freezeDeep({
         damage: 300
     },
     riverPadding: 64,
-    trailPadding: 384
+    trailPadding: 384,
+    vehicleMaxRPM: 10000
 });
 
 export enum ZIndexes {
@@ -154,7 +155,8 @@ export enum ObjectCategory {
     Decal,
     Parachute,
     ThrowableProjectile,
-    SyncedParticle
+    SyncedParticle,
+    Vehicle
 }
 
 export const enum AnimationType {

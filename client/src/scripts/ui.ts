@@ -27,6 +27,7 @@ import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaul
 import { EMOTE_SLOTS, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, requestFullscreen } from "./utils/misc";
+import { Vehicles } from "@common/definitions/vehicles";
 
 /*
     eslint-disable

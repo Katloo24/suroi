@@ -127,6 +127,14 @@ export class GameSound {
         }
     }
 
+    setVolume(volume: number): void {
+        if (this.instance) this.instance.volume = volume;
+    }
+
+    setSpeed(speed: number): void {
+        if (this.instance) this.instance.speed = speed;
+    }
+
     setPaused(paused: boolean): void {
         if (this.instance) this.instance.paused = paused;
     }

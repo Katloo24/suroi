@@ -17,6 +17,8 @@ import { type CompiledAction, type CompiledTuple, type InputManager } from "../.
 import { sanitizeHTML, stringify } from "../misc";
 import { type PossibleError, type Stringable } from "./gameConsole";
 import { Casters, ConVar } from "./variables";
+import { Vehicles } from "@common/definitions/vehicles";
+import type { GameSound } from "../../managers/soundManager";
 
 export type CommandExecutor<ErrorType> = (
     this: Game,
@@ -183,7 +185,59 @@ export class Command<
 export function setUpCommands(game: Game): void {
     const gameConsole = game.console;
     const keybinds = game.inputManager.binds;
+    /*
+    const vehicleDef = Vehicles.fromString("renova_rs8");
+    const {
+        idle,
+        redline,
+        baseDecelerationRate,
+        baseAccelerationRate,
+        baseRevLimiterDrop,
+        rpmRanges
+    } = vehicleDef.rpm;
+    const { min, max } = vehicleDef.needle;
+    let vehicleRPM = idle;
+    let throttlePressed = false;
+    const currentSounds = new Map<string, GameSound>();
+    type RPMRange = typeof vehicleDef["rpm"]["rpmRanges"][number];
+    const volume = vehicleDef.volume;
+    setInterval(() => {
+        const sounds: Array<{ soundName: string, range: RPMRange }> = rpmRanges
+            .filter(range => vehicleRPM > range.lowerBound && vehicleRPM < range.upperBound)
+            .map(range => ({ soundName: `${vehicleDef.idString}_${range.base}`, range }));
 
+        for (const { soundName } of sounds) {
+            if (currentSounds.has(soundName)) continue;
+            currentSounds.set(soundName, game.soundManager.play(soundName, { loop: true }));
+        }
+
+        for (const [soundName, soundObj] of currentSounds.entries()) {
+            const range = sounds.find(sound => sound.soundName === soundName)?.range;
+            if (range) {
+                const { base, lowerBound, upperBound, minSpeed, maxSpeed } = range;
+                let interpFactor: number;
+                let speed: number;
+                if (vehicleRPM >= base) {
+                    interpFactor = 1 - ((vehicleRPM - base) / (upperBound - base));
+                    speed = ((1 - interpFactor) * (maxSpeed - 1)) + 1;
+                } else { // if (vehicleRPM < base) {
+                    interpFactor = 1 - ((base - vehicleRPM) / (base - lowerBound));
+                    speed = (interpFactor * (1 - minSpeed)) + minSpeed;
+                }
+                const vol = ((((vehicleRPM - idle) / (redline - idle)) * (volume.max - volume.min)) + volume.min) * interpFactor;
+                soundObj.setVolume(vol);
+                soundObj.setSpeed(speed);
+            } else {
+                soundObj.stop();
+                currentSounds.delete(soundName);
+            }
+        }
+
+        const angle = ((vehicleRPM / redline) * (max - min)) + min;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        document.getElementById("tachometer-needle")!.style.transform = `rotate(${angle}deg)`;
+    }, 100);
+    */
     const createMovementCommand = (
         name: keyof InputManager["movement"],
         spectateAction?: Exclude<SpectateActions, SpectateActions.SpectateSpecific>
@@ -203,9 +257,11 @@ export function setUpCommands(game: Game): void {
                 }
                 : function() {
                     this.inputManager.movement[name] = true;
+                    // throttlePressed = true;
                 },
             function() {
                 this.inputManager.movement[name] = false;
+                // throttlePressed = false;
             },
             game,
             {

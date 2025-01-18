@@ -390,6 +390,8 @@ export class InputManager {
         // not be honored
         if (document.activeElement !== document.body) return;
 
+        if (event.target === document.getElementById("throttle")) return;
+
         const { type } = event;
 
         /*

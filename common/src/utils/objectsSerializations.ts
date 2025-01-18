@@ -1,4 +1,4 @@
-import { AnimationType, Layer, ObjectCategory, PlayerActions } from "../constants";
+import { AnimationType, GameConstants, Layer, ObjectCategory, PlayerActions } from "../constants";
 import { Armors, type ArmorDefinition } from "../definitions/armors";
 import { Backpacks, type BackpackDefinition } from "../definitions/backpacks";
 import { Buildings, type BuildingDefinition } from "../definitions/buildings";
@@ -9,6 +9,7 @@ import { Obstacles, RotationMode, type ObstacleDefinition } from "../definitions
 import { Skins, type SkinDefinition } from "../definitions/skins";
 import { SyncedParticles, type SyncedParticleDefinition } from "../definitions/syncedParticles";
 import { type ThrowableDefinition } from "../definitions/throwables";
+import { VehicleDefinition, Vehicles } from "../definitions/vehicles";
 import { type Orientation, type Variation } from "../typings";
 import { Angle, halfπ } from "./math";
 import { type Mutable, type SDeepMutable } from "./misc";
@@ -167,6 +168,18 @@ export interface ObjectsNetData extends BaseObjectsNetData {
             readonly definition: SyncedParticleDefinition
             readonly variant?: Variation
             readonly creatorID?: number
+        }
+    }
+    //
+    // Vehicle data
+    //
+    readonly [ObjectCategory.Vehicle]: {
+        readonly position: Vector
+        readonly rotation: number
+        readonly rpm: number
+        readonly full?: {
+            readonly definition: VehicleDefinition
+            readonly layer: Layer
         }
     }
 }
@@ -811,6 +824,33 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 definition: Loots.readFromStream(stream),
                 halloweenSkin: stream.readUint8() !== 0,
                 tintIndex: stream.readUint8()
+            };
+        }
+    },
+    /*
+    Vehicle Serialization
+    */
+    [ObjectCategory.Vehicle]: {
+        serializePartial(stream, data) {
+            stream.writePosition(data.position);
+            stream.writeRotation2(data.rotation);
+            stream.writeFloat(data.rpm, 0, GameConstants.vehicleMaxRPM, 2);
+        },
+        serializeFull(stream, { full }) {
+            Vehicles.writeToStream(stream, full.definition);
+            stream.writeLayer(full.layer);
+        },
+        deserializePartial(stream) {
+            return {
+                position: stream.readPosition(),
+                rotation: stream.readRotation2(),
+                rpm: stream.readFloat(0, GameConstants.vehicleMaxRPM, 2)
+            };
+        },
+        deserializeFull(stream) {
+            return {
+                definition: Vehicles.readFromStream(stream),
+                layer: stream.readLayer()
             };
         }
     }

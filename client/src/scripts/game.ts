@@ -214,16 +214,17 @@ export class Game {
 
         const game = new Game();
 
-        game.console.readFromLocalStorage();
-        setUpCommands(game);
         await initTranslation(game);
         await fetchServerData(game);
+        game.soundManager = new SoundManager(game);
+        game.console.readFromLocalStorage();
+        await game.soundManager.loadSounds(game);
+        setUpCommands(game);
         game.inputManager.generateBindsConfigScreen();
         game.inputManager.setupInputs();
 
         game.gasRender = new GasRender(game, PIXI_SCALE);
         game.map = new Minimap(game);
-        game.soundManager = new SoundManager(game);
 
         const initPixi = async(): Promise<void> => {
             const renderMode = game.console.getBuiltInCVar("cv_renderer");
@@ -313,7 +314,6 @@ export class Game {
 
         void Promise.all([
             initPixi(),
-            game.soundManager.loadSounds(game),
             setUpUI(game)
         ]).then(() => {
             unlockPlayButtons();

@@ -49,6 +49,8 @@ import { IDAllocator } from "./utils/idAllocator";
 import { cleanUsername, modeFromMap, removeFrom } from "./utils/misc";
 import { Mode } from "fs";
 import { ModeDefinition, Modes } from "@common/definitions/modes";
+import { VehicleDefinition } from "@common/definitions/vehicles";
+import { Vehicle } from "./objects/vehicle";
 
 /*
     eslint-disable
@@ -320,6 +322,10 @@ export class Game implements GameData {
 
         for (const projectile of this.grid.pool.getCategory(ObjectCategory.ThrowableProjectile)) {
             projectile.update();
+        }
+
+        for (const vehicle of this.grid.pool.getCategory(ObjectCategory.Vehicle)) {
+            vehicle.update();
         }
 
         for (const syncedParticle of this.grid.pool.getCategory(ObjectCategory.SyncedParticle)) {
@@ -739,6 +745,7 @@ export class Game implements GameData {
         this.grid.addObject(player);
         player.setDirty();
         this.aliveCountDirty = true;
+        this.addVehicle("renova_rs8", player.position, 0);
         this.updateObjects = true;
         this.updateGameData({ aliveCount: this.aliveCount });
 
@@ -992,6 +999,10 @@ export class Game implements GameData {
         const projectile = new ThrowableProjectile(this, position, layer, definition, source);
         this.grid.addObject(projectile);
         return projectile;
+    }
+
+    addVehicle<Def extends VehicleDefinition = VehicleDefinition>(definition: ReifiableDef<Def>, position: Vector, layer: Layer): void {
+        this.grid.addObject(new Vehicle(this, definition, position, layer));
     }
 
     removeProjectile(projectile: ThrowableProjectile): void {

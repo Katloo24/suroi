@@ -872,6 +872,28 @@
     }
 }
 
+#engine-container {
+    position: absolute;
+    bottom: 150px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 10000 !important;
+}
+
+#tachometer {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+#tachometer-needle {
+    top: 0.1px;
+    position: absolute;
+    transition: transform 0.1s;
+}
+
 #spectating-msg {
     align-items: center;
     display: inline-flex;
