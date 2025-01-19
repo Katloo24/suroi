@@ -3,6 +3,7 @@ import { GameObject } from "./gameObject";
 import type { ObjectsNetData } from "@common/utils/objectsSerializations";
 import { Game } from "../game";
 import type { VehicleDefinition } from "@common/definitions/vehicles";
+import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 
 export class Vehicle extends GameObject.derive(ObjectCategory.Vehicle) {
     definition!: VehicleDefinition;
@@ -18,6 +19,11 @@ export class Vehicle extends GameObject.derive(ObjectCategory.Vehicle) {
             const full = data.full;
             const definition = this.definition = full.definition;
             this.layer = full.layer;
+
+            if (isNew) {
+                const image = new SuroiSprite(definition.idString);
+                this.container.addChild(image);
+            }
         }
 
         const definition = this.definition;
@@ -26,10 +32,13 @@ export class Vehicle extends GameObject.derive(ObjectCategory.Vehicle) {
             console.warn("Vehicle partially updated before being fully updated");
         }
 
-        this.position = data.position;
-        this.rotation = data.rotation;
+        this.container.position = toPixiCoords(this.position = data.position);
+        this.container.rotation = this.rotation = data.rotation;
         this.rpm = data.rpm;
 
         console.log(this.rpm);
+    }
+
+    updateZIndex(): void {
     }
 }
