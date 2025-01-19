@@ -61,6 +61,7 @@ import { EMOTE_SLOTS, LAYER_TRANSITION_DELAY, PIXI_SCALE, UI_DEBUG_MODE } from "
 import { setUpNetGraph } from "./utils/graph/netGraph";
 import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { Tween } from "./utils/tween";
+import { Vehicle } from "./objects/vehicle";
 
 /* eslint-disable @stylistic/indent */
 
@@ -74,6 +75,7 @@ type ObjectClassMapping = {
     readonly [ObjectCategory.Parachute]: typeof Parachute
     readonly [ObjectCategory.ThrowableProjectile]: typeof ThrowableProjectile
     readonly [ObjectCategory.SyncedParticle]: typeof SyncedParticle
+    readonly [ObjectCategory.Vehicle]: typeof Vehicle
 };
 
 const ObjectClassMapping: ObjectClassMapping = Object.freeze<{
@@ -87,7 +89,8 @@ const ObjectClassMapping: ObjectClassMapping = Object.freeze<{
     [ObjectCategory.Decal]: Decal,
     [ObjectCategory.Parachute]: Parachute,
     [ObjectCategory.ThrowableProjectile]: ThrowableProjectile,
-    [ObjectCategory.SyncedParticle]: SyncedParticle
+    [ObjectCategory.SyncedParticle]: SyncedParticle,
+    [ObjectCategory.Vehicle]: Vehicle
 });
 
 type ObjectMapping = {
