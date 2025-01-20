@@ -56,6 +56,7 @@ import { type Loot } from "./loot";
 import { type Obstacle } from "./obstacle";
 import { type SyncedParticle } from "./syncedParticle";
 import { type ThrowableProjectile } from "./throwableProj";
+import { Vehicle } from "./vehicle";
 
 export interface PlayerContainer {
     readonly teamID?: string
@@ -407,6 +408,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     downed = false;
     beingRevivedBy?: Player;
 
+    vehicle?: Vehicle;
     activeStair?: Obstacle;
 
     get position(): Vector {
@@ -987,10 +989,14 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         const movementVector = Vec.scale(movement, speed);
         this._movementVector = movementVector;
 
-        this.position = Vec.add(
-            this.position,
-            Vec.scale(this.movementVector, dt)
-        );
+        if (this.vehicle) {
+            this.position = this.vehicle.position;
+        } else {
+            this.position = Vec.add(
+                this.position,
+                Vec.scale(this.movementVector, dt)
+            );
+        }
 
         // Cancel reviving when out of range
         if (this.action instanceof ReviveAction) {
@@ -2578,6 +2584,39 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     } else {
                         uninteractable.object?.interact(this, uninteractable.object.canInteract(this));
                     }
+
+                    this.canDespawn = false;
+                    this.disableInvulnerability();
+                    break;
+                }
+                case InputActions.EnterVehicle: {
+                    console.log("John Suroi");
+                    interface CloseObject {
+                        object: Vehicle | undefined
+                        dist: number
+                    }
+
+                    const interactable: CloseObject = {
+                        object: undefined,
+                        dist: Number.MAX_VALUE
+                    };
+                    const detectionHitbox = new CircleHitbox(3 * this._sizeMod, this.position);
+
+                    for (const object of this.game.grid.intersectsHitbox(detectionHitbox)) {
+                        if (
+                            object?.isVehicle
+                            && object.hitbox?.collidesWith(detectionHitbox)
+                            && adjacentOrEqualLayer(this.layer, object.layer)
+                        ) {
+                            const dist = Geometry.distanceSquared(object.position, this.position);
+                            if (dist < interactable.dist) {
+                                interactable.dist = dist;
+                                interactable.object = object as Vehicle;
+                            }
+                        }
+                    }
+
+                    interactable.object?.interact(this);
 
                     this.canDespawn = false;
                     this.disableInvulnerability();

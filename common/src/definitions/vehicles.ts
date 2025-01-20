@@ -1,6 +1,8 @@
+import { Hitbox, RectangleHitbox } from "../utils/hitbox";
 import { ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
 
 export interface VehicleDefinition extends ObjectDefinition {
+    readonly hitbox: Hitbox
     readonly rpm: {
         readonly idle: number
         readonly redline: number
@@ -34,6 +36,7 @@ export const Vehicles = ObjectDefinitions.create<VehicleDefinition>("Vehicles", 
     {
         idString: "renova_rs8",
         name: "Renova RS8",
+        hitbox: RectangleHitbox.fromRect(10, 10),
         rpm: {
             idle: 1000,
             redline: 7000,

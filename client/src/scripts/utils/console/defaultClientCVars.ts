@@ -273,5 +273,6 @@ export const defaultBinds = Object.freeze({
     "toggle_console": [],
     "+map_ping": [],
     "toggle_slot_lock": [],
-    "toggle pf_net_graph 0 1 2": []
+    "toggle pf_net_graph 0 1 2": [],
+    "enter_vehicle": ["E"]
 } as Record<string, string[]>);

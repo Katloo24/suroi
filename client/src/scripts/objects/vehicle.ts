@@ -3,7 +3,8 @@ import { GameObject } from "./gameObject";
 import type { ObjectsNetData } from "@common/utils/objectsSerializations";
 import { Game } from "../game";
 import type { VehicleDefinition } from "@common/definitions/vehicles";
-import { SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 
 export class Vehicle extends GameObject.derive(ObjectCategory.Vehicle) {
     definition!: VehicleDefinition;
@@ -40,5 +41,17 @@ export class Vehicle extends GameObject.derive(ObjectCategory.Vehicle) {
     }
 
     updateZIndex(): void {
+    }
+
+    override updateDebugGraphics(): void {
+        if (!HITBOX_DEBUG_MODE) return;
+
+        this.debugGraphics.clear();
+        drawHitbox(
+            this.definition.hitbox.transform(this.position, 1),
+            HITBOX_COLORS.obstacle,
+            this.debugGraphics,
+            1
+        );
     }
 }

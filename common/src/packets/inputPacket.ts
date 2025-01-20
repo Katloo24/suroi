@@ -219,7 +219,7 @@ export const PlayerInputPacket = createPacket("PlayerInputPacket")<PlayerInputDa
             data.actions = stream.readArray(() => {
                 const data = stream.readUint8();
                 // hiMask = 2 msb, type = 4 lsb
-                const [hiMask, type] = [data & 0b1100_0000, (data & 15) as InputActions];
+                const [hiMask, type] = [data & 0b1100_0000, (data & 0b0001_1111) as InputActions];
 
                 let slot: number | undefined;
                 let item: HealingItemDefinition | ScopeDefinition | ArmorDefinition | AmmoDefinition | BackpackDefinition | PerkDefinition | undefined;

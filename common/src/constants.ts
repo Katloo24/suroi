@@ -207,7 +207,8 @@ export const enum InputActions {
     Emote,
     MapPing,
     Loot,
-    ExplodeC4
+    ExplodeC4,
+    EnterVehicle
 }
 
 export const enum SpectateActions {

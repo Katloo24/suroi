@@ -6,6 +6,8 @@ import { ReifiableDef } from "@common/utils/objectDefinitions";
 import { Game } from "../game";
 import { Vector } from "@common/utils/vector";
 import { FullData } from "@common/utils/objectsSerializations";
+import { resolveStairInteraction } from "@common/utils/math";
+import { Player } from "./player";
 
 export class Vehicle extends BaseGameObject.derive(ObjectCategory.Vehicle) {
     override readonly fullAllocBytes = 16;
@@ -53,6 +55,10 @@ export class Vehicle extends BaseGameObject.derive(ObjectCategory.Vehicle) {
     }
 
     damage(): void {
+    }
+
+    interact(player: Player): void {
+        player.vehicle = this;
     }
 
     override get data(): FullData<ObjectCategory.Vehicle> {

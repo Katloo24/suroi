@@ -257,11 +257,9 @@ export function setUpCommands(game: Game): void {
                 }
                 : function() {
                     this.inputManager.movement[name] = true;
-                    // throttlePressed = true;
                 },
             function() {
                 this.inputManager.movement[name] = false;
-                // throttlePressed = false;
             },
             game,
             {
@@ -460,6 +458,21 @@ export function setUpCommands(game: Game): void {
         {
             short: "Interacts with an object, if there is one",
             long: "When invoked, the player will attempt to interact with the closest interactable object that is in range.",
+            allowOnlyWhenGameStarted: true,
+            signatures: [{ args: [], noexcept: true }]
+        }
+    );
+
+    Command.createCommand(
+        "enter_vehicle",
+        function() {
+            this.inputManager.addAction(InputActions.EnterVehicle);
+            console.log("Suroi John");
+        },
+        game,
+        {
+            short: "Enters the nearest vehicle",
+            long: "When invoked, the player will attempt to enter the nearest vehicle that is in range, or exit if in a vehicle already.",
             allowOnlyWhenGameStarted: true,
             signatures: [{ args: [], noexcept: true }]
         }
